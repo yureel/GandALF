@@ -1,4 +1,4 @@
-Min,0.00E+00,5.50E+02,5.00E+00
-Max,1.00E+00,6.50E+02,5.42E+01
-Type,discrete,continuous,continuous
-Variables,SAPO34,cat_T,contact_time
+Variables,SAPO34,cat_T,Flow,Output
+Min,0.00E+00,5.50E+02,1.50E+01,
+Max,1.00E+00,6.50E+02,2.25E+02,
+Type,discrete,continuous,continuous,

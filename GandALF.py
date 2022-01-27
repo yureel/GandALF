@@ -5,10 +5,8 @@ from Clustering import select_uncertainty, select_EMOC, select_center, normalize
 import numpy as np
 import pandas as pd
 
-
 pool_size = 100000
 n_init = 10
-maxiter = 20
 mode = 'EMOC'  # 'uncertainty', 'EMOC' or 'center'
 normalize = True  # normalize all input dimensions before clustering overwrites scale
 scale = False  # scale the dimensions by an importance parameter
@@ -17,7 +15,7 @@ objective = None  # function which receives a 2 dimensional np.array as argument
 csv_file = pd.read_csv('GandALF.csv', header=None)
 csv_values = csv_file.values
 try:
-    if csv_values[3, 4] == 'output' or csv_values[3, 4] == 'Output':
+    if csv_values[0, -1] == 'output' or csv_values[0, -1] == 'Output':
         n_variables = csv_values[0].size-2
     else:
         n_variables = csv_values[0].size - 1
@@ -27,8 +25,8 @@ lengthscale = np.ones((1, n_variables))
 
 spacelist = []
 for i in range(n_variables):
-    spacelist.append({'name': csv_values[3][i+1], 'type': csv_values[2][i+1],
-                      'domain': (float(csv_values[0][i+1]), float(csv_values[1][i+1]))})
+    spacelist.append({'name': csv_values[0][i+1], 'type': csv_values[3][i+1],
+                      'domain': (float(csv_values[1][i+1]), float(csv_values[2][i+1]))})
 
 # constraints = [{'name': 'const_2', 'constraint': 'x[:,0]+x[:,1]-1.1'},
 #                {'name': 'const_3', 'constraint': '-x[:,0]-x[:,1]+0.9'}
@@ -36,8 +34,8 @@ for i in range(n_variables):
 
 # space = GPyOpt.Design_space(space=spacelist, constraints=constraints)
 space = GPyOpt.Design_space(space=spacelist)
-min_values = np.array(csv_values[0, 1:1+n_variables], dtype=float)
-max_values = np.array(csv_values[1, 1:1+n_variables], dtype=float)
+min_values = np.array(csv_values[1, 1:1+n_variables], dtype=float)
+max_values = np.array(csv_values[2, 1:1+n_variables], dtype=float)
 
 if csv_values.shape[0] == 4:
     X, Y = initialization_cluster(space, pool_size, n_init, min_values, max_values,
