@@ -9,7 +9,7 @@ import random
 def select_uncertainty(pool, X, Y, lower_bound, upper_bound):
     kernel = GPy.kern.RBF(input_dim=X.shape[1], ARD=True)
     model = GPy.models.GPRegression(X, Y, kernel, normalizer=True)
-    kernel.lengthscale = list((lower_bound + upper_bound)/2)
+    kernel.lengthscale = list((abs(lower_bound) + abs(upper_bound))/2)
     model.optimize(RProp(), messages=True)
     model.optimize(messages=True, max_iters=5000)
     print(kernel.lengthscale)
@@ -21,7 +21,7 @@ def select_uncertainty(pool, X, Y, lower_bound, upper_bound):
 def select_EMOC(pool, X, Y, lower_bound, upper_bound):
     kernel = GPy.kern.RBF(input_dim=X.shape[1], ARD=True)
     model = GPy.models.GPRegression(X, Y, kernel, normalizer=True)
-    kernel.lengthscale = list((lower_bound + upper_bound)/2)
+    kernel.lengthscale = list((abs(lower_bound) + abs(upper_bound))/2)
     model.optimize(RProp(max_iters=250), messages=True)
     model.optimize(messages=True, max_iters=5000)
     print(kernel.lengthscale)

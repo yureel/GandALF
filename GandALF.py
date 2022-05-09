@@ -28,15 +28,12 @@ for i in range(n_variables):
     spacelist.append({'name': csv_values[0][i+1], 'type': csv_values[3][i+1],
                       'domain': (float(csv_values[1][i+1]), float(csv_values[2][i+1]))})
 
-# constraints = [{'name': 'const_2', 'constraint': 'x[:,0]+x[:,1]-1.1'},
-#                {'name': 'const_3', 'constraint': '-x[:,0]-x[:,1]+0.9'}
-#                ]
 
-# space = GPyOpt.Design_space(space=spacelist, constraints=constraints)
 space = GPyOpt.Design_space(space=spacelist)
 min_values = np.array(csv_values[1, 1:1+n_variables], dtype=float)
 max_values = np.array(csv_values[2, 1:1+n_variables], dtype=float)
 
+# The initial experiments
 if csv_values.shape[0] == 4:
     X, Y = initialization_cluster(space, pool_size, n_init, min_values, max_values,
                                   objective=objective, normalize=True, scale=False)
@@ -53,7 +50,9 @@ if csv_values.shape[0] == 4:
 else:
     X = np.array(csv_values[4:, 1: -1], dtype=float)
     Y = np.array(csv_values[4:, -1], dtype=float).reshape(-1, 1)
-    pool = np.vstack((GPyOpt.experiment_design.initial_design('random', space, 100 * X.shape[0]), X))
+    if np.isnan(Y[-1]):
+        raise SyntaxError("The output of the last experiment is not supplied")
+    pool = np.vstack((GPyOpt.experiment_design.initial_design('random', space, max(10**5, 100 * X.shape[0])), X))
     if normalize:
         pool = normalizer(pool, min_values, max_values)
     elif scale:
@@ -79,10 +78,13 @@ else:
         X_new = select_center(X_cluster, cluster, query_cluster)
     elif mode == 'random':
         X_new = select_random(X_cluster)
+
+    X = np.vstack((X, X_new))
     if objective is not None:
         Y_new = objective(np.array([X_new]))
         Y = np.vstack((Y, Y_new))
-    X = np.vstack((X, X_new))
-    X_new = np.hstack((np.array(X.shape[0]), X_new, Y_new))
+        X_new = np.hstack((np.array(X.shape[0]), X_new, Y_new))
+    else:
+        X_new = np.hstack((np.array(X.shape[0]), X_new))
     with open('GandALF.csv', "ab") as f:
         np.savetxt(f, X_new.reshape(1, -1), delimiter=',')
