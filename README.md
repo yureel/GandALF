@@ -1,7 +1,7 @@
 # GandALF
 GandALF (GAussian N-Dimensional Active Learning Framework) is an **Active Learning** tool for design-of-experiments
 
-This repository contains the latest version of the active learning framework presented by **add link**.
+This repository contains the latest version of the active learning framework presented by **https://doi.org/10.1016/j.fuel.2022.125340**.
 
 ## Installation
 GandALF can be used by cloning this repository directly to the desired local folder. 
@@ -35,4 +35,4 @@ If no initial data is available, GandALF will select a desired number of experim
 When the initial experiments are executed, GandALF will sequentially select the following optimal experiments. These experiments can be executed and the values can be added manually to the "GandALF.csv" file or when these are computational experiments an objective function can be specified which determines the experimental output.
 
 ## Reference
-**add link**
+https://doi.org/10.1016/j.fuel.2022.125340
